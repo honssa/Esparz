@@ -8,7 +8,7 @@
 
 // Tipos de escenas (flags)
 #define ESCENA_MENU 101
-#define ESCENA_XOGO_LOCAL 102
+#define ESCENA_PARTIDA 102
 #define ESCENA_PAUSA 103
 #define ESCENA_LOBBY 104
 #define ESCENA_OPCIONS 105

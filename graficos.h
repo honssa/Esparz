@@ -1,6 +1,7 @@
 #ifndef GRAFICOS_H
 #include <SDL2/SDL.h>
 #include <stdbool.h>
+#include "transf.h"
 #define NEGRO {0,0,0,255}
 #define BRANCO {255,255,255,255}
 #define PALETA {NEGRO,BRANCO}

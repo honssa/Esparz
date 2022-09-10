@@ -132,6 +132,14 @@ int actualizar_menu(){
     int cursor_x, cursor_y;
     int buttons = SDL_GetMouseState(&cursor_x, &cursor_y);
     actualizar_botons(botons, cursor_x, cursor_y);
+
+    //presionas local carga escena partida
+    if ((botons->boton_sensado == 0) && botons->click){
+        printf("detecta boton de partida");
+        T_ESCENA* partida = inicializarEscena(ESCENA_PARTIDA, inicializar_partida,
+                eventos_partida, actualizar_partida, debuxar_partida, free_partida);
+        cambiarEscena(partida);
+    }
     return 0;
 
 }
@@ -155,5 +163,5 @@ void free_menu(){
   // Free aos botons (individuais)
   // Free a "botons" (colectivo)
   free_botons(botons);
-  return
+  return;
 }

@@ -26,6 +26,10 @@ void freeEscena(void* x){
     free(escena);
 }
 
+void cambiarEscena(T_ESCENA* novaEscena){
+    baleirar(pila_escenas);
+    apilar(pila_escenas, novaEscena);
+}
 
 
 T_PILA* inicializar(){

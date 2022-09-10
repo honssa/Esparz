@@ -1,7 +1,7 @@
 #include "letras.h"
 #include "boton.h"
 #include "director.h"
-
+#include "partida.h"
 
 void inicializar_menu();
 int eventos_menu();
