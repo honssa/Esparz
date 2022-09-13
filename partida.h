@@ -1,29 +1,30 @@
 #include "director.h"
-#include "graficos.h"
+#include "transf.h"
 
-#define DIMX_NAVE 12
-#define DIMY_NAVE 12
+#define DIMX_NAVE 11
+#define DIMY_NAVE 11
 
 // Forma da nave
-#define NAVE {{0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0}, \
-              {0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0}, \
-              {0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0}, \
-              {0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0}, \
-              {0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0}, \
-              {0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0}, \
-              {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0}, \
-              {0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0}, \
-              {0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0}, \
-              {0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0}, \
-              {1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1}, \
-              {0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0}}
+#define NAVE {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, \
+              {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}, \
+              {1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1}, \
+              {1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1}, \
+              {1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1}, \
+              {1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1}, \
+              {1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1}, \
+              {1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1}, \
+              {1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1}, \
+              {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, \
+              {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}}
 
 typedef struct SNAVE {
+    T_SUPERFICIE_EXT* tse; // superficie de transformacion
     SDL_Surface* spnorm; // sprite normal
     SDL_Surface* sphit; // sprite danado
     int recarga; // recarga de disparo
     SDL_Point p; // Posicion
     SDL_Point dir; // Direcion
+    int grados; // Rotacion
 } T_NAVE; 
 
 void inicializar_partida();

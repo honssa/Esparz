@@ -3,7 +3,7 @@
 #define LETRA_ANCHO 6
 #define LETRA_ALTO 13
 #include <SDL2/SDL.h>
-#include "graficos.h"
+#include "transf.h"
 
 
 #define LETRA_A {{0, 0, 0, 0, 0, 0}, \

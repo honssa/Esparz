@@ -12,10 +12,13 @@
 
 typedef struct superficie_ext{
     SDL_Surface* superficie;
-    float x1; float y1;
-    float x2; float y2;
+    T_VECTOR v1;
+    T_VECTOR v2;
+    T_VECTOR v3; 
+    T_VECTOR v4;
+    T_VECTOR offset;
 } T_SUPERFICIE_EXT;
 
 T_SUPERFICIE_EXT* formatear(SDL_Surface* s);
-T_SUPERFICIE_EXT* virar(T_SUPERFICIE_EXT* s, int grados);
+T_SUPERFICIE_EXT* virar(T_SUPERFICIE_EXT* s, int grados, T_VECTOR offset);
 #endif

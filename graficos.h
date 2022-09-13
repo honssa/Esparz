@@ -1,7 +1,7 @@
 #ifndef GRAFICOS_H
 #include <SDL2/SDL.h>
 #include <stdbool.h>
-#include "transf.h"
+//#include "transf.h"
 #define NEGRO {0,0,0,255}
 #define BRANCO {255,255,255,255}
 #define PALETA {NEGRO,BRANCO}
@@ -11,6 +11,11 @@
 #define FA 3 // FACTOR AUMENTACION: multiplica x3 os graficos
 
 extern SDL_Color gcolors[2];
+
+typedef struct vector{
+    float x;
+    float y;
+} T_VECTOR;
 
 
 void debuxar_rectangulo(SDL_Surface* s, SDL_Point p1, SDL_Point p2, uint8_t cor);
