@@ -49,11 +49,11 @@ int eventos_partida(){
                         break;
                     case SDLK_UP:
                     case SDLK_w:
-                        nave->dir.x = 0; nave->dir.y = 1;
+                        nave->dir.x = 0; nave->dir.y = -1;
                         break;
                     case SDLK_DOWN:
                     case SDLK_s:
-                        nave->dir.x = 0; nave->dir.y = -1;
+                        nave->dir.x = 0; nave->dir.y = 1;
                         break;
                     case SDLK_f:
                         nave->grados += 15;
@@ -88,7 +88,7 @@ int debuxar_partida(SDL_Renderer* rend){
     //SDL_RenderCopy(rend, textura, NULL, &dst);
     //SDL_DestroyTexture(textura);
     // Debuxar nave
-    T_VECTOR off = {.x = 0, .y = 0};
+    T_VECTOR off = {.x = 2, .y = 2};
     nave->tse = virar(tse, nave->grados, off);
     SDL_Texture* textura2 = SDL_CreateTextureFromSurface(rend, nave->tse->superficie);
     SDL_Rect dst2 = { .x = nave->p.x + ((int)(nave->tse->offset.x * FA)),
