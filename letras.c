@@ -1,5 +1,5 @@
 #include "letras.h"
-
+// Xa funciona a autenticacion ssh automatica
 T_FONTE fonte = {.letra_A = LETRA_A, \
                  .letra_C = LETRA_C, \
                  .letra_E = LETRA_E, \
