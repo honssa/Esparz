@@ -1,5 +1,5 @@
 #include "transf.h"
-
+// pequena probinha
 
 SDL_Point nova_dim(T_VECTOR v1, T_VECTOR v2, T_VECTOR v3, T_VECTOR v4){
     float max_x = MAX( MAX(v1.x, v2.x), MAX(v3.x, v4.x) );
