@@ -3,7 +3,7 @@
 
 #define DIMX_NAVE 11
 #define DIMY_NAVE 11
-
+#define NUM_TECLAS 322
 // Forma da nave
 #define NAVE {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, \
               {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}, \

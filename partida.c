@@ -3,6 +3,7 @@
 T_NAVE* nave;
 T_SUPERFICIE_EXT* tse;
 T_SUPERFICIE_EXT* tse2;
+uint8_t TECLAS[NUM_TECLAS];
 
 int i = 0, contador = 0;
 
@@ -28,46 +29,62 @@ void inicializar_partida(){
     tse = formatear(nave->spnorm);
     T_VECTOR off = {.x = 0, .y = 0};
     tse2 = virar(tse, 0, off);
+
+    // Inicializamos o vector de teclas a 0
+    for(int i=0; i<NUM_TECLAS; i++){
+        TECLAS[i] = 0;
+    }
+    //SDL_EnableKeyRepeat(0,0);
     return;
 }
 
+void manexar_entrada(){
+    if(TECLAS[SDLK_a]){
+        nave->dir.x = -1; nave->dir.y = 0;
+    }
+    if(TECLAS[SDLK_d]){
+        nave->dir.x = 1; nave->dir.y = 0;
+    }
+    if(TECLAS[SDLK_w]){
+        nave->dir.x = 0; nave->dir.y = -1;
+    }
+    if(TECLAS[SDLK_s]){
+        nave->dir.x = 0; nave->dir.y = 1;
+    }
+    // Esta parado
+    if(!TECLAS[SDLK_s] && !TECLAS[SDLK_w] && !TECLAS[SDLK_d] && !TECLAS[SDLK_a]){
+        nave->dir.x = 0; nave->dir.y = 0;
+    }
+    return;
+}
+
+
 int eventos_partida(){
+    
     SDL_Event e;
     while(SDL_PollEvent(&e) != 0){
         switch(e.type){
             case SDL_QUIT:
                 return 1;
             case SDL_KEYDOWN:
-                switch(e.key.keysym.sym) {
-                    case SDLK_LEFT:
-                    case SDLK_a:
-                        nave->dir.x = -1; nave->dir.y = 0;
-                        break;
-                    case SDLK_RIGHT:
-                    case SDLK_d:
-                        nave->dir.x = 1; nave->dir.y = 0;
-                        break;
-                    case SDLK_UP:
-                    case SDLK_w:
-                        nave->dir.x = 0; nave->dir.y = -1;
-                        break;
-                    case SDLK_DOWN:
-                    case SDLK_s:
-                        nave->dir.x = 0; nave->dir.y = 1;
-                        break;
-                    case SDLK_f:
-                        nave->grados += 15;
-                        if (nave->grados > 360){
-                            nave->grados -= 360;
-                        }
-                        break;
-                }  
+                //printf("PRESIONADA %d\n", ((uint8_t)e.key.keysym.sym));
+                TECLAS[((uint8_t)e.key.keysym.sym)] = 1;
                 break;
             case SDL_KEYUP:
-                nave->dir.x = 0; nave->dir.y = 0;
+                //printf("LIBERADA %d\n", ((uint8_t)e.key.keysym.sym));
+                TECLAS[((uint8_t)e.key.keysym.sym)] = 0;
+                break;
+            default:
+                break;
+                //nave->dir.x = 0; nave->dir.y = 0;
         }
     }
+    manexar_entrada();
     return 0;
+    
+    //if (teclado()) { return 1; }
+    //manexar_entrada();
+    //return 0;
 }
 
 int actualizar_partida(){
