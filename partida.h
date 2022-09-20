@@ -23,8 +23,9 @@ typedef struct SNAVE {
     SDL_Surface* sphit; // sprite danado
     int recarga; // recarga de disparo
     SDL_Point p; // Posicion
-    SDL_Point dir; // Direcion
-    int grados; // Rotacion
+    T_VECTOR dir; // Direcion
+    int grados; // Rotacion;
+    float impulso; // Impulso de movemento
 } T_NAVE; 
 
 void inicializar_partida();

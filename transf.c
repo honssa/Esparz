@@ -28,7 +28,7 @@ T_SUPERFICIE_EXT* formatear(SDL_Surface* s){
 
 
 
-T_SUPERFICIE_EXT* virar(T_SUPERFICIE_EXT* s, int grados, T_VECTOR off){
+T_SUPERFICIE_EXT* virar(T_SUPERFICIE_EXT* s, int grados, T_VECTOR off, T_VECTOR* dir){
     T_SUPERFICIE_EXT* nova_superficie = malloc(sizeof(T_SUPERFICIE_EXT));
     float rad = RADIANS*grados;
 
@@ -71,6 +71,11 @@ T_SUPERFICIE_EXT* virar(T_SUPERFICIE_EXT* s, int grados, T_VECTOR off){
     // Averiguar o vector translacion (C0tran_C0)
     SDL_Point translacion = {.x = cx - centro.x, .y = cy - centro.y};
 
+    nova_superficie->v1 = v1;
+    nova_superficie->v2 = v2;
+    nova_superficie->v3 = v3;
+    nova_superficie->v4 = v4;
+
     // Actualizamos o offset
     nova_superficie->offset.x += translacion.x;
     nova_superficie->offset.y += translacion.y;
@@ -112,6 +117,10 @@ T_SUPERFICIE_EXT* virar(T_SUPERFICIE_EXT* s, int grados, T_VECTOR off){
         }
         offscreen += ns->pitch; // Pasas á seguinte fila
     }
+
+    // Actualizar o vector direccion
+    dir->x = sin(rad); 
+    dir->y = cos(rad);
 
     // Devolver resultado
     nova_superficie->superficie = ns;
