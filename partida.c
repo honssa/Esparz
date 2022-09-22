@@ -205,6 +205,47 @@ int debuxar_partida(SDL_Renderer* rend){
                       .y = nave->p.y + ((int)(nave->tse->offset.y * FA)),
                       .w = nave->tse->superficie->w * FA,
                       .h = nave->tse->superficie->h * FA };
+
+    // Screen wrapping
+    SDL_Texture* duplicada = SDL_CreateTextureFromSurface(rend, nave->tse->superficie);
+    SDL_Rect dst_dup;
+    if (dst2.x < 0 || (dst2.x+dst2.w) > XANELA_ANCHO || dst2.y < 0 || (dst2.y+dst2.h) > XANELA_ALTO) {
+        if (dst2.x < 0) {
+            printf("wrapping\n");
+            dst_dup.x = XANELA_ANCHO + dst2.x;
+            //dst_dup.w = dst2.w;
+            //dst_dup.h = dst2.h;
+            //dst_dup.y = dst2.y;
+        }
+        else if ( (dst2.x + dst2.w) > XANELA_ANCHO) {
+            dst_dup.x = dst2.x - XANELA_ANCHO;
+        }
+        
+        else {
+            dst_dup.x = dst2.x;
+        }
+        if ( dst2.y < 0) {
+            dst_dup.y = XANELA_ALTO + dst2.y;
+
+        }
+        else if ( (dst2.y + dst2.h) > XANELA_ALTO) {
+            dst_dup.y = dst2.y - XANELA_ALTO;
+
+        }
+        else {
+            dst_dup.y = dst2.y;
+        }
+        
+        dst_dup.w = dst2.w;
+        dst_dup.h = dst2.h;
+
+        printf("Forma da estructura: x: %d, y: %d, w:%d , h: %d\n", dst_dup.x, dst_dup.y, dst_dup.w, dst_dup.h);
+
+        SDL_RenderCopy(rend, duplicada, NULL, &dst_dup);
+        //SDL_DestroyTexture(textura2);
+
+        
+    }
     SDL_RenderCopy(rend, textura2, NULL, &dst2);
     SDL_DestroyTexture(textura2);
     SDL_RenderPresent(rend);
