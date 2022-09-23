@@ -72,6 +72,25 @@ void simular_movemento() {
     return;
 }
 
+void simular_movemento_proba(){
+    if (TECLAS[SDLK_w]) {
+        nave->p.y -= 1;
+    }
+    if (TECLAS[SDLK_a]) {
+        nave->p.x -= 1;
+    }
+    if (TECLAS[SDLK_s]) {
+        nave->p.y += 1;
+    }
+    if (TECLAS[SDLK_d]) {
+        nave->p.x += 1;
+    }
+    //if (!TECLAS[SDLK_w] && !TECLAS[SDLK_a] && !TECLAS[SDLK_s] && !TECLAS[SDLK_d]) {
+    //    
+    //}
+    
+}
+
 void manexar_entrada(){
     if (TECLAS[SDLK_a]) {
         acu_propulsion_esq = MIN(120, acu_propulsion_esq++);
@@ -170,7 +189,8 @@ int eventos_partida(){
 }
 
 int actualizar_partida(){
-    simular_movemento();
+    simular_movemento_proba();
+    //simular_movemento();
     SDL_Point p_enteira = {.x = 0, .y = 0};
     acu_posicion->x += nave->dir.x * nave->impulso;
     acu_posicion->y += -nave->dir.y * nave->impulso;
@@ -234,6 +254,42 @@ int debuxar_partida(SDL_Renderer* rend){
         }
         else {
             dst_dup.y = dst2.y;
+        }
+
+        // Se esta nunha esquina
+        if ( (dst2.x < 0 || (dst2.x + dst2.w) > XANELA_ANCHO ) && (dst2.y < 0 || (dst2.y + dst2.h) > XANELA_ALTO) ) {
+            // Creamos outras duas texturas e as debuxamos xa directamente aqui nas posicions correspondentes
+            
+            // A reflexada en X da orixinal
+            SDL_Texture* dup3 = SDL_CreateTextureFromSurface(rend, nave->tse->superficie);
+            SDL_Rect dst_dup3; 
+            if (dst2.x < 0) {
+                dst_dup3.x = dst2.x + XANELA_ANCHO;
+            }
+            else if ( (dst2.x + dst2.w) > XANELA_ANCHO) {
+                dst_dup3.x = dst2.x - XANELA_ANCHO;
+            }
+            dst_dup3.y = dst2.y;
+            dst_dup3.w = dst2.w;
+            dst_dup3.h = dst2.h;
+
+            // A reflexada en Y da orixinal (porque o reflexo orixinal e o diagonal)
+            SDL_Texture* dup4 = SDL_CreateTextureFromSurface(rend, nave->tse->superficie);
+            SDL_Rect dst_dup4; 
+            if (dst2.y < 0) {
+                dst_dup4.y = dst2.y + XANELA_ALTO;
+            }
+            else if ( (dst2.y + dst2.h) > XANELA_ALTO) {
+                dst_dup4.y = dst2.y - XANELA_ALTO;
+            }
+            dst_dup4.x = dst2.x;
+            dst_dup4.w = dst2.w;
+            dst_dup4.h = dst2.h;
+
+                                    
+                                
+            SDL_RenderCopy(rend, dup3, NULL, &dst_dup3);
+            SDL_RenderCopy(rend, dup4, NULL, &dst_dup4);
         }
         
         dst_dup.w = dst2.w;
