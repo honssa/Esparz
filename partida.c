@@ -189,8 +189,8 @@ int eventos_partida(){
 }
 
 int actualizar_partida(){
-    simular_movemento_proba();
-    //simular_movemento();
+    //simular_movemento_proba();
+    simular_movemento();
     SDL_Point p_enteira = {.x = 0, .y = 0};
     acu_posicion->x += nave->dir.x * nave->impulso;
     acu_posicion->y += -nave->dir.y * nave->impulso;
@@ -229,9 +229,35 @@ int debuxar_partida(SDL_Renderer* rend){
     // Screen wrapping
     SDL_Texture* duplicada = SDL_CreateTextureFromSurface(rend, nave->tse->superficie);
     SDL_Rect dst_dup;
+    if (dst2.x < -dst2.w) {
+        dst2.x += XANELA_ANCHO;
+        nave->p.x += XANELA_ANCHO;
+        goto FINAL_WRAPEO;
+    }
+    else if ((dst2.x + dst2.w) > (XANELA_ANCHO+dst2.w)) {
+        dst2.x -= XANELA_ANCHO;
+        nave->p.x -= XANELA_ANCHO;
+        goto FINAL_WRAPEO;
+    }
+    else if (dst2.y < -dst2.h) {
+        dst2.y += XANELA_ALTO;
+        nave->p.y += XANELA_ALTO;
+        goto FINAL_WRAPEO;
+    }
+    else if ((dst2.y + dst2.h) > (XANELA_ALTO+dst2.h)) {
+        dst2.y -= XANELA_ALTO;
+        nave->p.y -= XANELA_ALTO;
+        goto FINAL_WRAPEO;
+    }
     if (dst2.x < 0 || (dst2.x+dst2.w) > XANELA_ANCHO || dst2.y < 0 || (dst2.y+dst2.h) > XANELA_ALTO) {
+        // Se te saes moito tes que reposicionar o orixinal e borrar o fantasma
+        //if ( dst2.x < -dst2.w ) {
+        //    dst2.x += XANELA_ANCHO;
+            // Perdoame Edsger Djikstra
+        //    goto FINAL_WRAPEO;
+        //}
+
         if (dst2.x < 0) {
-            printf("wrapping\n");
             dst_dup.x = XANELA_ANCHO + dst2.x;
             //dst_dup.w = dst2.w;
             //dst_dup.h = dst2.h;
@@ -290,6 +316,7 @@ int debuxar_partida(SDL_Renderer* rend){
                                 
             SDL_RenderCopy(rend, dup3, NULL, &dst_dup3);
             SDL_RenderCopy(rend, dup4, NULL, &dst_dup4);
+            
         }
         
         dst_dup.w = dst2.w;
@@ -298,10 +325,12 @@ int debuxar_partida(SDL_Renderer* rend){
         printf("Forma da estructura: x: %d, y: %d, w:%d , h: %d\n", dst_dup.x, dst_dup.y, dst_dup.w, dst_dup.h);
 
         SDL_RenderCopy(rend, duplicada, NULL, &dst_dup);
+        // ola!
         //SDL_DestroyTexture(textura2);
 
         
     }
+FINAL_WRAPEO:
     SDL_RenderCopy(rend, textura2, NULL, &dst2);
     SDL_DestroyTexture(textura2);
     SDL_RenderPresent(rend);
