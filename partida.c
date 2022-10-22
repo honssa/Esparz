@@ -8,6 +8,9 @@ T_VECTOR* acu_posicion;
 float acu_propulsion_dta;
 float acu_propulsion_esq;
 int xiro_agarda;
+int recarga;
+
+LISTA_T* l; 
 
 int i = 0, contador = 0;
 
@@ -20,7 +23,7 @@ T_NAVE* inicializar_nave(uint8_t x, uint8_t y){
     n->impulso = 0; 
     n->spnorm = SDL_CreateRGBSurface(SDL_SWSURFACE, DIMX_NAVE, DIMY_NAVE, 8, 0, 0, 0, 0);
     SDL_SetPaletteColors(n->spnorm->format->palette, gcolors, 0, 2);
-    uint8_t* matriz = malloc(sizeof(uint8_t)*DIMX_NAVE*DIMY_NAVE);
+    //uint8_t* matriz = malloc(sizeof(uint8_t)*DIMX_NAVE*DIMY_NAVE);
     uint8_t mnave[DIMX_NAVE][DIMY_NAVE] = NAVE;
     SDL_Point ptmp = {.x = 0, .y = 0}; SDL_Point tamtmp = {.x = DIMX_NAVE, .y = DIMY_NAVE};
     debuxar_matriz(n->spnorm, ptmp, tamtmp, &mnave[0][0]);
@@ -29,12 +32,34 @@ T_NAVE* inicializar_nave(uint8_t x, uint8_t y){
     return n;
 }
 
+T_PROXECTIL* inicializar_proxectil(SDL_Point p, T_VECTOR dir){
+    T_PROXECTIL* proxectil = malloc(sizeof(T_PROXECTIL));
+    
+    // Debuxo do proxectil
+    proxectil->dbx = SDL_CreateRGBSurface(SDL_SWSURFACE, DIMX_PROXECTIL, DIMY_PROXECTIL, 8, 0, 0, 0, 0);
+    SDL_SetPaletteColors(proxectil->dbx->format->palette, gcolors, 0, 2);
+    //uint8_t* matriz = malloc(sizeof(uint8_t)*DIMX_PROXECTIL*DIMY_PROXECTIL);
+    uint8_t mproxectil[DIMX_PROXECTIL][DIMY_PROXECTIL] = PROXECTIL;
+    SDL_Point ptmp = {.x = 0, .y = 0}; SDL_Point tamtmp = {.x = DIMX_PROXECTIL, .y = DIMY_PROXECTIL};
+    debuxar_matriz(proxectil->dbx, ptmp, tamtmp, &mproxectil[0][0]);
+    
+    // Posicion e direcion
+    SDL_Point tmp = {.x = p.x, .y = p.y};
+    T_VECTOR tmp2 = {.x = dir.x, .y = dir.y};
+    proxectil->p = tmp;
+    proxectil->dir = tmp2;
+    T_VECTOR acu_p = {.x = 0, .y = 0}; 
+    proxectil->acu_p = acu_p;
+    return proxectil;
+}
+
 void inicializar_partida(){
     nave = inicializar_nave(100,100);
     tse = formatear(nave->spnorm);
     acu_posicion = malloc(sizeof(T_VECTOR));
     acu_posicion->x = 0; acu_posicion->y = 0; // coordenadas clasicas
-    T_VECTOR off = {.x = 0, .y = 0};
+    recarga = 0; // Tempo de espera ata volver a disparar
+    //T_VECTOR off = {.x = 0, .y = 0};
     //tse2 = virar(tse, 0, off, &nave->dir);
 
     // Inicializamos o vector de teclas a 0
@@ -43,12 +68,15 @@ void inicializar_partida(){
     }
     acu_propulsion_esq = 0; acu_propulsion_dta = 0;
     xiro_agarda = 0;
+
+    // Inicializar lista de proxectiles
+    l = ini_lista(sizeof(T_PROXECTIL));
     //SDL_EnableKeyRepeat(0,0);
     return;
 }
 
 void simular_movemento() {
-    float acu_prop = acu_propulsion_esq + acu_propulsion_dta;
+    //float acu_prop = acu_propulsion_esq + acu_propulsion_dta;
     float prop_dif = acu_propulsion_dta - acu_propulsion_esq;
     if (prop_dif > 0) xiro_agarda++;
     else if (prop_dif < 0) xiro_agarda--;
@@ -85,10 +113,19 @@ void simular_movemento_proba(){
     if (TECLAS[SDLK_d]) {
         nave->p.x += 1;
     }
-    //if (!TECLAS[SDLK_w] && !TECLAS[SDLK_a] && !TECLAS[SDLK_s] && !TECLAS[SDLK_d]) {
-    //    
-    //}
-    
+}
+
+void spawn_proxectil(){
+    // Debuxamos un proxectil e movemolo en direcion Vdir da nave
+    // Temos que engadilo a lista de proxectiles
+    // Esta lista conten todos os proxectiles a actualizar e 
+    // debuxar 
+    // Cando o proxectil saia da pantalla eliminamolo da lista
+    SDL_Point p = {.x = nave->p.x + (DIMX_NAVE/2)*FA, .y = nave->p.y + (DIMY_NAVE/2)*FA};
+    T_PROXECTIL* proxectil = inicializar_proxectil(p, nave->dir);
+    engadir(l, proxectil);
+    printf("Dir proxectil: %f, %f\n", proxectil->dir.x, proxectil->dir.y);
+    printf("Dir nave: %f, %f\n", nave->dir.x, nave->dir.y);
 }
 
 void manexar_entrada(){
@@ -103,6 +140,11 @@ void manexar_entrada(){
     }
     if (!TECLAS[SDLK_f]) {
         acu_propulsion_dta = MAX(0, acu_propulsion_dta--);
+    }
+    if (TECLAS[SDLK_l] && !recarga) {
+        // Disparamos proxectil
+        spawn_proxectil();
+        recarga = 120;
     }
     /*
     if(TECLAS[SDLK_a] && TECLAS[SDLK_f]){
@@ -205,8 +247,24 @@ int actualizar_partida(){
     }
     nave->p.x += p_enteira.x;
     nave->p.y += p_enteira.y;
+
+    // Actualizar a posicion dos proxectiles
+    for(int i=0; i<tam(l); i++){
+        T_PROXECTIL* proxectil = (T_PROXECTIL*) get(l,i);
+        proxectil->acu_p.x += proxectil->dir.x * 2.5;
+        proxectil->acu_p.y += -proxectil->dir.y * 2.5;
+        proxectil->p.x += floor(proxectil->acu_p.x);
+        proxectil->acu_p.x -= floor(proxectil->acu_p.x);
+        proxectil->p.y += floor(proxectil->acu_p.y);
+        proxectil->acu_p.y -= floor(proxectil->acu_p.y);
+    }
+    // Actualizar o tempo de recarga
+    recarga = MAX(0,recarga-1);
+    //printf("Dir nave: < %f , %f > \n", nave->dir.x, nave->dir.y);
     return 0;
 }
+
+
 
 int debuxar_partida(SDL_Renderer* rend){
     SDL_RenderClear(rend);
@@ -333,6 +391,16 @@ int debuxar_partida(SDL_Renderer* rend){
 FINAL_WRAPEO:
     SDL_RenderCopy(rend, textura2, NULL, &dst2);
     SDL_DestroyTexture(textura2);
+    
+    for(int i=0; i<tam(l); i++){
+        T_PROXECTIL* proxectil = (T_PROXECTIL*) get(l,i);
+        SDL_Rect dst_tmp = { .x = proxectil->p.x,
+                          .y = proxectil->p.y,
+                          .w = proxectil->dbx->w * FA,
+                          .h = proxectil->dbx->h * FA };
+        SDL_Texture* textura_tmp = SDL_CreateTextureFromSurface(rend, proxectil->dbx);
+        SDL_RenderCopy(rend, textura_tmp, NULL, &dst_tmp);
+    }
     SDL_RenderPresent(rend);
     return 0;
 }

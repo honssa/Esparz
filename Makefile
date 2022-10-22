@@ -1,11 +1,11 @@
 #OS := windows
 OS := linux
 # add source files here (pdr_rodando.c)
-SRCS := menu.c partida.c letras.c director.c pila.c arrancar_xogo.c transf.c graficos.c boton.c
+SRCS := menu.c partida.c letras.c director.c pila.c arrancar_xogo.c transf.c graficos.c boton.c lista.c
 
 # generate names of object files
 OBJS := $(SRCS:.c=.o)
-HDRS := menu.h partida.h letras.h director.h pila.h transf.h graficos.h boton.h
+HDRS := menu.h partida.h letras.h director.h pila.h transf.h graficos.h boton.h lista.h
 # name of executable
 EXEC := game
 #-static -static-libgcc
@@ -55,7 +55,7 @@ menu.o: menu.c letras.o boton.o
 	$(CC) $(CFLAGS) $< -c -o $@
 #	#$(CC) -o ${OBJS} -c -I/usr/local/x86_64-w64-mingw32/include/SDL2 pdr_rodando.c
 
-partida.o: partida.c graficos.o transf.o
+partida.o: partida.c graficos.o transf.o lista.o
 	$(CC) $(CFLAGS) $< -c -o $@
 
 boton.o: boton.c letras.o graficos.o
@@ -68,6 +68,9 @@ transf.o: transf.c graficos.o
 	$(CC) $(CFLAGS) $< -c -o $@
 
 graficos.o: graficos.c
+	$(CC) $(CFLAGS) $< -c -o $@
+
+lista.o: lista.c
 	$(CC) $(CFLAGS) $< -c -o $@
 #letras.o: letras.c
 #	$(CC) $(CFLAGS) $< -c -o $@

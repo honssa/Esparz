@@ -41,5 +41,6 @@ void freeEscena(void* x);
 T_PILA* inicializar();
 void bucleEventos();
 void finalizarExecucion();
+void cambiarEscena(T_ESCENA* novaEscena);
 
 #endif
